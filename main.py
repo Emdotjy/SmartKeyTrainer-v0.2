@@ -6,10 +6,34 @@ import chords
 from SmartKeyTrainerUI import SmartKeyTrainerUI
 from audio_handler import *
 import threading
+import tkinter as tk
 
 class SmartKeyTrainer:
 
     def __init__(self):
+
+        #before anything, select a midi input
+        def on_select(event):
+            selected_item = listbox.get(listbox.curselection())
+            print("Selected item:", selected_item)
+            root.destroy()
+            self.input_name = selected_item
+
+        root = tk.Tk()
+        root.title("Select midi input")
+
+        listbox = tk.Listbox(root)
+        listbox.pack()
+
+        items = mido.get_input_names()
+        for item in items:
+            listbox.insert(tk.END, item)
+
+        listbox.bind("<<ListboxSelect>>", on_select)
+
+        root.mainloop()
+
+
 
         self.UI = SmartKeyTrainerUI(self.UI_event_handler)
         self.audio_maker = AudioHandler()
@@ -20,6 +44,13 @@ class SmartKeyTrainer:
         self.exercise = None
         self.target_notes = set(range(100))
         self.current_thread_id =0
+
+    def octaviate_target_notes(self):
+        for i in range(21,109):
+            if i%12 in self.target_chord_list[0]:
+                self.target_notes.add(i)
+
+
   
 
 
@@ -132,8 +163,7 @@ class SmartKeyTrainer:
 
 
     def run(self):
-
-        with mido.open_input('Arturia KeyLab Essential 49 0', callback=self.msg_handler) as inport:
+        with mido.open_input(self.input_name, callback=self.msg_handler) as inport:
             self.UI.mainloop()
 
 if __name__ == "__main__":
