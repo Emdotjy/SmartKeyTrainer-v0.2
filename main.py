@@ -7,6 +7,7 @@ from SmartKeyTrainerUI import SmartKeyTrainerUI
 from audio_handler import *
 import threading
 import tkinter as tk
+from Sequence import Sequence
 
 class SmartKeyTrainer:
 
@@ -70,34 +71,53 @@ class SmartKeyTrainer:
             self.UI.display_chord(self.target_chord_name)
             self.target_notes = set.union(self.target_chord_list[0],self.target_chord_list[1] )
             self.exercise = "AB voicings"
+        if button_pressed == "Diatonic Sequence":
+            self.exercise = Sequence(shift = 1)
+            self.target_notes =self.exercise.get_targets()
         t1 = threading.Thread(target=self.color_target_notes_blue, args=(self.current_thread_id,), name=f"Thread-{self.current_thread_id}")
         t1.start()        
 
 
+
     def msg_handler(self, msg: mido.Message):
-        print(msg.note)
+
+        if msg.type =="note on" and msg.note in self.playing:
+            msg.type.__setattr__(type = "note_off")
+        print("note recieved\n","value : " +str(msg.note),"\n message type : " +msg.type,"\n msg in self.playing : "+str(msg.note in self.playing)  )
+        print("self.playing 1 : "+str(self.playing))
+        print("targe notes : ", self.target_notes)
         if self.exercise != None:
 
-            if msg.type == 'note_on':
 
+            if msg.type == 'note_off' or (msg.type =="note_on" and msg.note in self.playing):
+                
+                if msg.note%12 in self.target_notes or msg.note in self.target_notes:
+                    color = "vert"
+                else:
+                    color = "rouge"
+                print("note off msg",msg.note,color)
+                self.UI.unplay(msg.note,color)
+                self.playing.remove(msg.note)
+            
+
+            elif msg.type == 'note_on':
                 self.playing.add(msg.note)
                 if msg.note%12 in self.target_notes or msg.note in self.target_notes:
                     color = "vert"
                 else:
                     color = "rouge"
-                
-                print(msg.note,color)
+                        
+                print("note on msg",msg.note,color)
                 self.UI.play(msg.note,color)
 
-            elif msg.type == 'note_off':
-                if msg.note%12 in self.target_notes or msg.note in self.target_notes:
-                    color = "vert"
-                else:
-                    color = "rouge"
+            print("self.playing 3 : "+str(self.playing))
 
-                self.UI.unplay(msg.note,color)
-                self.playing.remove(msg.note)
-
+            if self.exercise.type() == Sequence:
+                if self.exercise.target_reached(self.playing):
+                    self.target_notes =self.exercise.get_targets()
+                    chord_name =self.exercise.get_chord_name() 
+                    if chord_name !='':
+                        self.UI.display_chord(chord_name)
 
             if self.exercise == "AB voicings":
                 print(2)
@@ -121,7 +141,7 @@ class SmartKeyTrainer:
                     t1 = threading.Thread(target=self.color_target_notes_blue, args=(self.current_thread_id,), name=f"Thread-{self.current_thread_id}")
                     t1.start()
                     
-                    
+            print("self.playing : 5"+str(self.playing))
         
             print(1)
             if self.exercise == "Seventh":
@@ -149,6 +169,7 @@ class SmartKeyTrainer:
                     self.current_thread_id+=1
                     t = threading.Thread(target=self.color_target_notes_blue, args=(self.current_thread_id,), name=f"Thread-{self.current_thread_id}")
                     t.start()
+            print("self.playing 10 +:"+str(self.playing))
 
 
                   

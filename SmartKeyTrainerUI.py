@@ -30,6 +30,10 @@ class SmartKeyTrainerUI:
         self.button.grid(column=1, row=0)
         self.button = ttk.Button(self.root, text="AB voicings", command= lambda: self.UI_event_handler("AB voicings"))
         self.button.grid(column=1, row=1)
+
+        self.button = ttk.Button(self.root, text="Diatonic Sequence", command= lambda: self.UI_event_handler("Diatonic Sequence"))
+        self.button.grid(column=1, row=2)
+
         self.debugging = ttk.Label(self.mainframe,text="").grid(column=1, row=1, sticky=W)
 
 
