@@ -4,7 +4,7 @@ from utils import     get_midi_value_from_scale, get_scale_value
 
 
 
-class Sequence:
+class TargetGenerator:
     def __init__(
             self,
             suffix='',

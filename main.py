@@ -7,7 +7,7 @@ from SmartKeyTrainerUI import SmartKeyTrainerUI
 from audio_handler import *
 import threading
 import tkinter as tk
-from Sequence import Sequence
+from TargetGenerator import TargetGenerator
 
 class SmartKeyTrainer:
 
@@ -43,7 +43,7 @@ class SmartKeyTrainer:
         if len(items)==1:
             self.input_name = items[0]
         else:
-            self.select_midi()
+            self.select_midi(items)
 
 
 
@@ -85,7 +85,7 @@ class SmartKeyTrainer:
             self.target_notes = set.union(self.target_chord_list[0],self.target_chord_list[1] )
             self.exercise = "AB voicings"
         if button_pressed == "Diatonic Sequence":
-            self.exercise = Sequence(shift = 1,keep_scale=True,chord_shapes=[{60,64,67}],scale_type = "Major")
+            self.exercise = TargetGenerator(shift = 1,keep_scale=True,chord_shapes=[{60,64,67}],scale_type = "Major")
             self.target_notes =self.exercise.get_targets()
         t1 = threading.Thread(target=self.color_target_notes_blue, args=(self.current_thread_id,), name=f"Thread-{self.current_thread_id}")
         t1.start()        
@@ -124,7 +124,7 @@ class SmartKeyTrainer:
                 self.UI.play(msg.note,color)
 
 
-            if  isinstance(self.exercise,Sequence) :
+            if  isinstance(self.exercise,TargetGenerator) :
                 if self.exercise.target_reached(self.playing):
                     self.target_notes =self.exercise.get_targets()
                     chord_name =self.exercise.get_chord_name() 
