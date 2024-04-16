@@ -3,6 +3,8 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 
 class SmartKeyTrainerUI:
+    "Class for the SmartKeyTrainer user interface. Include exercise display, keyboard display and buttons."
+
     def __init__(self,main_event_handler):
       
         self.root = Tk()
@@ -25,35 +27,20 @@ class SmartKeyTrainerUI:
         self.canvas.grid(row=3,column = 0,columnspan= 3)
         self.playing = dict()
 
-        
-        self.button = ttk.Button(self.root, text="basic seventh", command= lambda: self.UI_event_handler("Seventh"))
-        self.button.grid(column=1, row=0)
-        self.button = ttk.Button(self.root, text="AB voicings", command= lambda: self.UI_event_handler("AB voicings"))
-        self.button.grid(column=1, row=1)
 
         self.button = ttk.Button(self.root, text="Diatonic Sequence", command= lambda: self.UI_event_handler("Diatonic Sequence"))
         self.button.grid(column=1, row=2)
 
-        self.debugging = ttk.Label(self.mainframe,text="").grid(column=1, row=1, sticky=W)
-
-
-
-
-
-        #set up dictionnaries for things
+        #set up dictionnaries for note image names and offsets
         self.note_filenames = {0: "do",1: "noir",2: "re",3: "noir",4: "mi",5: "fa",6: "noir",7: "sol",8: "noir",9: "la",10: "noir",11: "si" }   
         self.note_offsets = {0: 0,2: 107,3: 0,4: 142,5: 178,6: 0,7: 214,8: 0,9: 0,10: 0,11: 35}
-
-
-
-
 
         for child in self.mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)
 
     def note_image_name(self,note):
+
         path = "image\\"
-        print(note%12)
         if note ==108:
             return path + "plate_"
         elif note ==21:
@@ -83,15 +70,12 @@ class SmartKeyTrainerUI:
                 self.canvas.delete(self.playing[(note,couleur)]['tag'])
                 self.playing.pop(key)
     def unplay(self, note,couleur):
-        print("A")
+
         print(self.playing)
 
         if (note,couleur) in self.playing:
-            print("B")
             self.canvas.delete(self.playing[(note,couleur)]['tag'])  # Delete the canvas item using the stored tag
-            print("C")
             del self.playing[(note,couleur)]  # Remove the note from the dictionary
-            print("D")
     def print(self,text):
         self.debugging(text = text)
     def mainloop(self):
