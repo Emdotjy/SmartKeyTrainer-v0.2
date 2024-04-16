@@ -76,9 +76,16 @@ class SmartKeyTrainerUI:
             (note,couleur)=key
             self.canvas.delete(self.playing[(note,couleur)]['tag'])
         self.playing.clear()
-    
+    def clear_blue_keyboard(self):
+        for key in self.playing.keys():
+            (note,couleur)=key
+            if couleur == "bleu":
+                self.canvas.delete(self.playing[(note,couleur)]['tag'])
+                self.playing.pop(key)
     def unplay(self, note,couleur):
         print("A")
+        print(self.playing)
+
         if (note,couleur) in self.playing:
             print("B")
             self.canvas.delete(self.playing[(note,couleur)]['tag'])  # Delete the canvas item using the stored tag

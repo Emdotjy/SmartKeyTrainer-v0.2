@@ -17,11 +17,13 @@ major_scale = [0,2,4,5,7,9,11]
 def get_scale_value(scale,chord_shapes_list):
     res = []
     chord  = set()
+    print(scale,chord_shapes_list)
     for chord_shape in chord_shapes_list:
         chord.clear()
+        print(res)
         for note in chord_shape:
             note_scale_octave_value = (note-scale)//12
-
+            print("3")
             try:    
                 note_scale_degree = major_scale.index((note-scale)%12)
             except:
@@ -47,4 +49,4 @@ def get_midi_value_from_scale(scale,chord_shapes_list):
 
 if __name__ == "__main__":
     print(get_scale_value(0,[{21,22,23,24,25,26,27,28}]))
-        
+    print(get_midi_value_from_scale(0,get_scale_value(0,[{21,22,23,24,25,26,27,28}]))        )
