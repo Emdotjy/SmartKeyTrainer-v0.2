@@ -1,5 +1,5 @@
 import random
-from utils import     get_midi_value_from_scale, get_scale_value
+from utils import     get_midi_value_from_scale, get_scale_value,chord_name_from_set
 
 
 
@@ -41,7 +41,7 @@ class TargetGenerator:
             self.scale_dict = {i:i for i in range(12)}
         
     def get_chord_name(self):
-        return str(self.chord_shapes_list[self.chord_shapes_progression])
+        return chord_name_from_set(self.chord_shapes_list[self.chord_shapes_progression])
 
     def get_targets(self):
         if self.mod:

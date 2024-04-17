@@ -1,3 +1,4 @@
+import pychord
 # Define the frequency of each note
 notes_freq = {
     "C4": 261.63,
@@ -11,8 +12,18 @@ notes_freq = {
 }
 major_scale = [0,2,4,5,7,9,11]
 
+def midi_position_to_note_name(midi_position):
+    mod_value = (midi_position-21)%12
+    value_to_letter = {0: 'A', 1: 'Bb', 2: 'B', 3: 'C', 4: 'Db', 5: 'D', 6: 'Eb', 7: 'E', 8: 'F', 9: 'Gb', 10: 'G', 11: 'Ab'}
+    return f"{value_to_letter[mod_value]}"
 
-
+def chord_name_from_set(entry_set):
+    chord = list(entry_set)
+    chord.sort()
+    res = []
+    for note in chord:
+        res.append(midi_position_to_note_name(note))
+    return(pychord.find_chords_from_notes(res))
 #scale is a value between 0 and 11
 def get_scale_value(scale,chord_shapes_list):
     res = []
@@ -48,5 +59,10 @@ def get_midi_value_from_scale(scale,chord_shapes_list):
     return res
 
 if __name__ == "__main__":
-    print(get_scale_value(0,[{21,22,23,24,25,26,27,28}]))
-    print(get_midi_value_from_scale(0,get_scale_value(0,[{21,22,23,24,25,26,27,28}]))        )
+    print(chord_name_from_set({60,64,67}))
+    print(chord_name_from_set({60,64,67,71}))
+    print(chord_name_from_set({60,64,67,71,74}))
+    print(chord_name_from_set({60,64,68}))
+    print(chord_name_from_set({60,64,68,71}))
+
+          
