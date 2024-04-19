@@ -36,7 +36,7 @@ class SmartKeyTrainer:
         else:
             self.select_midi(items)
 
-        self.UI = SmartKeyTrainerUI(self.UI_event_handler)
+        self.UI = SmartKeyTrainerUI(self.start_exercise)
         self.audio_maker = AudioHandler()
         self.outport = mido.open_output()
         self.playing = set()
@@ -51,15 +51,26 @@ class SmartKeyTrainer:
             if i%12 in self.target_chord_list[0]:
                 self.target_notes.add(i)
 
-    def UI_event_handler(self,button_pressed):
+    def start_exercise(self,selected_chords,selected_progression,selected_scales,selected_sequence,mod,interval):
+        """Start an exercise with the paramters selected by the user."""
+        if mod is None:
+            mod = True
+        if selected_chords == None:
+            selected_chords = [{60,64,67}]
+        if selected_sequence == None:
+            selected_sequence = 0
+        if interval == None:
+            interval = [21,108]
+
         self.UI.clear_keyboard()
 
-        if button_pressed == "Destroy":
-            self.mixer.quit()
-
-        if button_pressed == "Diatonic Sequence":
-            self.exercise = TargetGenerator(shift = 1,keep_scale=True,chord_shapes=[{60,64,67}],scale_type = "Major")
-            self.target_notes =self.exercise.get_targets()
+        self.exercise = TargetGenerator(shift = selected_sequence,
+                                        keep_scale=False,
+                                        chord_shapes= selected_chords,
+                                        scale_type = selected_scales,
+                                        mod = mod,
+                                        interval = interval)
+        self.target_notes =self.exercise.get_targets()
 
         t1 = threading.Thread(target=self.color_target_notes_blue, args=(self.current_thread_id,), name=f"Thread-{self.current_thread_id}")
         t1.start()        
