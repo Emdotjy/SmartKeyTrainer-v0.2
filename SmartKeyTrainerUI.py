@@ -1,30 +1,30 @@
 from tkinter import *
-from tkinter import ttk
-from PIL import ImageTk, Image
 
+from PIL import ImageTk, Image
+import customtkinter as ctk
 
 class SmartKeyTrainerUI:
     "Class for the SmartKeyTrainer user interface. Include exercise display, keyboard display and buttons."
 
     def __init__(self,start_exercise_callback):
-      
-        self.root = Tk()
+        ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
+        ctk.set_default_color_theme("blue") 
+        self.root = ctk.CTk()
 
         self.start_exercise_callback = start_exercise_callback
-        self.mainframe = ttk.Frame(self.root, padding="3 3 12 12")
+        self.mainframe = ctk.CTkFrame(self.root)
         self.mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
 
-        self.label_chord_display = ttk.Label(self.mainframe,text="",font=("Arial", 25) )
+        self.label_chord_display = ctk.CTkLabel(self.mainframe,text="",font=("Arial", 55) )
         self.label_chord_display.grid(column=1, row=1, sticky=W)
 
-        self.canvas = Canvas(self.root)
+        self.canvas = Canvas(self.root,highlightthickness=0)
         self.img_keyboard =ImageTk.PhotoImage(file="image\pianokey_keyboard.jpg")
         self.height_piano,self.width_piano=self.img_keyboard.height(),self.img_keyboard.width()
         self.canvas.config(width=self.width_piano, height=self.height_piano)
         self.canvas.create_image(0,0,image =self.img_keyboard,anchor =NW)
-        self.canvas.delete(self.img_keyboard)
         self.canvas.grid(row=3,column = 0,columnspan= 3)
         self.selected_chords = None
         self.selected_progression = None
@@ -35,17 +35,17 @@ class SmartKeyTrainerUI:
 
 
         self.mod_value = True
-        self.mod_tick_box = ttk.Checkbutton(self.root, text="Mod", command = self.mod_change_value())
+        self.mod_tick_box = ctk.CTkCheckBox(self.root, text="Mod", command = self.mod_change_value())
         self.mod_tick_box.grid(column=1, row=2)
 
 
-        self.chord_selection_widget = ttk.Combobox(self.root, values=["Major","Minor","Diminished","Augmented","Major 7","Minor 7","Dominant 7","Half Diminished 7","Diminished 7"])
+        self.chord_selection_widget = ctk.CTkComboBox(self.root, values=["Major","Minor","Diminished","Augmented","Major 7","Minor 7","Dominant 7","Half Diminished 7","Diminished 7"])
         self.chord_selection_widget.grid(column=1, row=0)
 
 
         
 
-        self.button = ttk.Button(self.root, text="Start Exercise",
+        self.button = ctk.CTkButton(self.root, text="Start Exercise",
             command= lambda: self.start_exercise_callback(
                 self.selected_chords,
                 self.selected_progression,
@@ -62,8 +62,7 @@ class SmartKeyTrainerUI:
         self.note_filenames = {0: "do",1: "noir",2: "re",3: "noir",4: "mi",5: "fa",6: "noir",7: "sol",8: "noir",9: "la",10: "noir",11: "si" }   
         self.note_offsets = {0: 0,2: 107,3: 0,4: 142,5: 178,6: 0,7: 214,8: 0,9: 0,10: 0,11: 35}
 
-        for child in self.mainframe.winfo_children(): 
-            child.grid_configure(padx=5, pady=5)
+
 
     def mod_change_value(self):
         self.mod_value = not self.mod_value
